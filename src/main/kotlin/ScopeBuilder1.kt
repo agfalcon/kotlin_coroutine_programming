@@ -3,7 +3,9 @@ import kotlinx.coroutines.*
 //runBlocking은 코루틴을 만들고 코드 블록이 수행이 끝날 떄까지 runBlocking 다음의 코드를 수행하지 못하게 막는다.
 //코루틴을 만드는 함수를 코루틴 빌더라고 한다.
 
-fun main() = hierarchyFunc()
+fun main() {
+    println(runBlockingReturnFunc())
+}
 
 fun runBlockingFunc(){
     runBlocking {
@@ -17,6 +19,11 @@ fun runBlockingFunc(){
 //BlockingCoroutine은 CoroutineScope의 자식.
 //코틀린 코루틴을 쓰는 모든 곳에는 코루틴 스코프가 있다고 생각하면 된다.
 //즉, 코루틴의 시작은 코루틴 스코프다.
+
+//기본적으로 컴파일러에서 runBlocking의 반환 형태를 유추하여 정해주지만 명시적으로 작성해야할 수 도있다.
+fun runBlockingReturnFunc() = runBlocking<Int>{
+    5 + 9
+}
 
 fun launchBuilderFunc() = runBlocking{
     launch{
@@ -32,6 +39,8 @@ fun launchBuilderFunc() = runBlocking{
 //launch -> 코루틴 빌더
 //launch의 특징은 "할 수 있다면 다른 코루틴 코드를 같이 수행"
 //2개의 코루틴 빌더가 있는데 runBlocking이 먼저 실행되고 launch는 runBlocking이 끝날 때까지 기다린 후 실행
+//delay 함수는 코루틴이나 suspend 함수 내에서만 호출할 수 있다.
+
 
 //이처럼 코드가 잠드는 부분을 suspension point라고 부르고, 코루틴은 이처럼 여러 코루틴이 단일 쓰레드 내에서도 협조하면서 잘 활용될 수 있다.
 
@@ -91,3 +100,4 @@ fun hierarchyFunc(){
 
 //runBlocking은 두 launch가 속해 있는데 계층화되어 구조적이다.
 //runBlocking은 그 속에 포함된 launch가 다 끝나기 전까지 종료되지 않는다.
+//또한 부모가 cancel 되면 자식도 cancel 된다.

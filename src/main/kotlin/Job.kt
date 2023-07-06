@@ -4,8 +4,7 @@ import kotlinx.coroutines.*
 //launch는 Job 객체를 반환하며 이를 통해 종료될 때까지 기다리거나 취소할 수 있다.
 //Job 객체에 대해 join()을 하면 해당 객체 코드 블럭이 끝날 때 까지 기다린다.
 //Job 객체에 대해 cancel()을 하면 해당 객체 코드 블럭 실행을 취소한다.
-//suspend 함수들은 취소가 되면 JobCancellationException을 발생시키기 때문에 try catch finally로 대응할 수 있다.
-//socket과 file 같은 경우 취소할 때 다시 닫아주면 된다.
+
 
 suspend fun doOneTwoThree() = coroutineScope {//this: 부모 코루틴
     val job = launch { // this : 자식 코루틴 1
@@ -71,6 +70,9 @@ suspend fun doCountDone() = coroutineScope {
     println("doCount Done!")
 }
 
+
+//suspend 함수들은 취소가 되면 JobCancellationException을 발생시키기 때문에 try catch finally로 대응할 수 있다.
+//socket과 file 같은 경우 취소할 때 다시 닫아주면 된다.
 suspend fun finallyUseFunc() = coroutineScope {
     val job1 = launch {
         try{
@@ -110,6 +112,47 @@ suspend fun finallyUseFunc() = coroutineScope {
     println("4!")
 }
 
+//어떤 코드는 취소 불가능해야할 때가 있다. withContext(NonCancellable)을 이용하면 취소 불가능한 블록을 만들 수 있다.
+//finally 코드 블록안에서도 사용 가능하다.
+
+suspend fun nonCancellableFun() = coroutineScope {
+    val job1 = launch {
+        withContext(NonCancellable) {
+            println("launch1: ${Thread.currentThread().name}")
+            delay(1000L)
+            println("1!")
+        }
+        delay(1000L)
+        println("job1 is finished!")
+    }
+
+    val job2 = launch {
+        withContext(NonCancellable) {
+            println("launch2: ${Thread.currentThread().name}")
+            delay(1000L)
+            println("2!")
+        }
+        delay(1000L)
+        println("job2 is finished!")
+    }
+
+    val job3 = launch {
+        withContext(NonCancellable) {
+            println("launch3: ${Thread.currentThread().name}")
+            delay(1000L)
+            println("3!")
+        }
+        delay(1000L)
+        println("job3 is finished!")
+    }
+
+    delay(800L)
+    job1.cancel()
+    job2.cancel()
+    job3.cancel()
+    println("4!")
+}
+
 
 
 //runBlocking vs coroutineScope
@@ -117,7 +160,7 @@ suspend fun finallyUseFunc() = coroutineScope {
 //coroutineScope는 현재 쓰레드를 멈추게 하지 않고 다른 누군가가 일을 하려고 하면 일을 할 수 있다.
 
 fun main() = runBlocking {
-    finallyUseFunc()
+    nonCancellableFun()
     println("runBlocking: ${Thread.currentThread().name}")
     println("5!")
 }

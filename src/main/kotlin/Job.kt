@@ -159,6 +159,14 @@ suspend fun nonCancellableFun() = coroutineScope {
 //runBlocking은 현재 쓰레드를 멈추게 만들고, 기다리지만
 //coroutineScope는 현재 쓰레드를 멈추게 하지 않고 다른 누군가가 일을 하려고 하면 일을 할 수 있다.
 
+
+
+//타임 아웃
+//일정 시간이 지난 후에 종료하고 싶다면 withTimeout을 이용한다.
+//일정 시간이 지나 종료되면 TimeoutCanellationException이 발생하고 try/catch를 이용해서 사용할 수 있다.
+//매번 예외처리를 하기 힘들기 때문에 코루틴에서는 withTimeoutOrNull을 제공한다.
+//withTimeoutOrNull은 타임 아웃되면 null을 반환한다.
+
 fun main() = runBlocking {
     nonCancellableFun()
     println("runBlocking: ${Thread.currentThread().name}")

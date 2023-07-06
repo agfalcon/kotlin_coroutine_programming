@@ -47,13 +47,32 @@ suspend fun cancelOneTwoThree() = coroutineScope {
     println("4!")
 }
 
+suspend fun doCountDone() = coroutineScope {
+    val job1 = launch(Dispatchers.Default){
+        var i = 1
+        var nextTime = System.currentTimeMillis() + 100L
+
+        while(i<=10){
+            val currentTime = System.currentTimeMillis()
+            if(currentTime>=nextTime) {
+                println(i)
+                nextTime = currentTime + 100L
+                i++
+            }
+        }
+    }
+
+    delay(200L)
+    job1.cancelAndJoin()
+    println("doCount Done!")
+}
+
+
 
 //runBlocking vs coroutineScope
 //runBlocking은 현재 쓰레드를 멈추게 만들고, 기다리지만
 //coroutineScope는 현재 쓰레드를 멈추게 하지 않고 다른 누군가가 일을 하려고 하면 일을 할 수 있다.
 
 fun main() = runBlocking {
-    cancelOneTwoThree() //suspension point
-    println("runBlocking: ${Thread.currentThread().name}")
-    println("5")
+    doCountDone()
 }

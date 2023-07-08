@@ -167,8 +167,8 @@ suspend fun nonCancellableFun() = coroutineScope {
 //매번 예외처리를 하기 힘들기 때문에 코루틴에서는 withTimeoutOrNull을 제공한다.
 //withTimeoutOrNull은 타임 아웃되면 null을 반환한다.
 
-fun main() = runBlocking {
-    nonCancellableFun()
-    println("runBlocking: ${Thread.currentThread().name}")
-    println("5!")
-}
+//fun main() = runBlocking {
+//    nonCancellableFun()
+//    println("runBlocking: ${Thread.currentThread().name}")
+//    println("5!")
+//}

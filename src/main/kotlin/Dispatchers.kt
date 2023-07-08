@@ -1,6 +1,6 @@
 import kotlinx.coroutines.*
 
-fun main() = unConfinedDispatcherFunc()
+//fun main() = unConfinedDispatcherFunc()
 
 fun dispatchersFunc() = runBlocking<Unit> {
     launch{

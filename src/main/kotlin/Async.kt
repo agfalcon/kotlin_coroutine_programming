@@ -85,11 +85,11 @@ suspend fun structuralAsync() = coroutineScope {//부모 코루틴
     }
 }// 여러가지를 함께 수행할 때 한가지에 문제가 생기면 다른 것들도 취소해야하는 경우 계층적으로 묶어서 한번에 취소하면 된다.
 
-fun main() = runBlocking {
-    try{
-        structuralAsync()
-    }
-    catch(e: IllegalStateException){
-        println("IllegalStateException failed: $e")
-    }
-}
+//fun main() = runBlocking {
+//    try{
+//        structuralAsync()
+//    }
+//    catch(e: IllegalStateException){
+//        println("IllegalStateException failed: $e")
+//    }
+//}

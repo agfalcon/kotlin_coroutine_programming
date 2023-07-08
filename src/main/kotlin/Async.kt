@@ -38,4 +38,20 @@ fun ex2() = runBlocking{
     println(elapsedTime)
 }// async를 이용해 코루틴을 새로 생성하고 await를 이용해 값의 결과를 기다렸다가 출력한다. 1033ms가 소요됨.
 
-fun main() = ex2()
+fun layAsync() = runBlocking{
+    val elapsedTime = measureTimeMillis {
+        val value1 = async(start = CoroutineStart.LAZY) {
+            getRandom1()
+        }
+        val value2 = async(start = CoroutineStart.LAZY) {
+            getRandom2()
+        }
+
+        value1.start()
+        value2.start()
+        println("${value1.await()} + ${value2.await()} = ${value1.await() + value2.await()}")
+    }
+    println(elapsedTime)
+}// async 키워드를 사용하는 순간 코드 블록이 수행을 준비하는데, async(start = CoroutineStart.LAZY)로 인자를 전달하면 우리가 원하는 순간 수행을 준비하게 할 수 있고, start 메서드를 이용해 수행을 할 수 있다.
+
+fun main() = layAsync()

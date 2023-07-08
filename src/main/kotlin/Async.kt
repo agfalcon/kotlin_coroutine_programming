@@ -54,4 +54,42 @@ fun layAsync() = runBlocking{
     println(elapsedTime)
 }// async 키워드를 사용하는 순간 코드 블록이 수행을 준비하는데, async(start = CoroutineStart.LAZY)로 인자를 전달하면 우리가 원하는 순간 수행을 준비하게 할 수 있고, start 메서드를 이용해 수행을 할 수 있다.
 
-fun main() = layAsync()
+suspend fun getRandom1WithException(): Int {
+    try{
+        delay(1000L)
+        return Random.nextInt(0, 500)
+    }
+    finally {
+        println("getRandom1 is cancelled.")
+    }
+}
+
+suspend fun getRandom2WithException(): Int {
+    delay(500L)
+    throw  IllegalStateException()
+}
+
+
+suspend fun structuralAsync() = coroutineScope {//부모 코루틴
+    val value1 = async {//자식 코루틴1
+        getRandom1WithException()
+    }
+    val value2 = async {//자식 코루틴2
+        getRandom2WithException()
+    }
+    try{
+        println("${value1.await()}  + ${value2.await()} = ${value1.await() + value2.await()}")
+    }
+    finally {
+        println("structuralAcsync is cancelled.")
+    }
+}// 여러가지를 함께 수행할 때 한가지에 문제가 생기면 다른 것들도 취소해야하는 경우 계층적으로 묶어서 한번에 취소하면 된다.
+
+fun main() = runBlocking {
+    try{
+        structuralAsync()
+    }
+    catch(e: IllegalStateException){
+        println("IllegalStateException failed: $e")
+    }
+}
